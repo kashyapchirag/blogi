@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body>
+    <div class="cont w-full h-screen bg-zinc-900 flex justify-center items-center flex-col gap-[2rem] text-white">
+        <div class="heading text-[2.5rem]">
+            Log In
+        </div>
+        <form class="flex flex-col justify-center items-center w-[30%] h-[40%] bg-zinc-500 gap-[1rem] rounded-[2rem]" action="/login" method="post">
+
+            <input class="bg-zinc-600 h-[2.5rem] p-[10px] w-[65%] rounded-[2rem]" type="email" name="email" placeholder="email">
+
+            <input class="bg-zinc-600 h-[2.5rem] p-[10px] w-[65%] rounded-[2rem]" type="password" name="password" placeholder="password">
+
+            <button type="submit" class="rounded-md bg-blue-500 h-[2.5rem] p-[10px] w-[35%] flex items-center justify-center cursor-pointer">Log in</button>
+
+            <a href="/" class="rounded-md bg-blue-500 h-[2.5rem] p-[10px] w-[35%] flex items-center justify-center cursor-pointer">Register</a>
+        </form>
+    </div>
+</body>
+</html>
