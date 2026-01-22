@@ -9,7 +9,6 @@ import bcrypt from 'bcrypt'
 
 import { user } from './models/userSchema.js';
 import { post } from './models/postSchema.js';
-import { runInNewContext } from 'vm';
 
 const app = express()
 const port = 3000
@@ -19,6 +18,22 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
 app.use(express.static('public'))
+
+const isLoggedin = (req,res,next)=>{
+        
+        const token = req.cookies.token
+        if(!token) return res.redirect('/login')
+            try{
+            const decoded =  jwt.verify(token,'secrethahaha')
+            req.user = decoded
+            next()
+
+        }
+        catch(err){
+            console.error(err.message);
+            res.redirect('/login')
+        }
+    }
 
 
 
@@ -33,8 +48,6 @@ try {
 
 
 
-
-
 app
     .get('/', (req, res) => {
         res.render('index')
@@ -44,8 +57,12 @@ app
         res.render('login')
     })
 
-    .get('/dashboard', (req, res)=>{
-        res.render('dashboard')
+    .get('/profile', isLoggedin, async(req, res)=>{
+        let data = await user.findOne({_id:req.user.userId})
+        const posts = await post.find({user:data._id})
+        // console.log(posts[0].content);
+        
+        res.render('profile',{name:data.name,username:data.username ,posts})
     })
 
     .post('/register' ,async (req, res)=>{
@@ -75,15 +92,21 @@ app
 
         try{
             const {email,password}=req.body
+            if(!email || !password){
+                return res.status(400).send('All fields are required')
+            }
             const account = await user.findOne({email})
             if(!account){
-                return res.redirect('/register')
+                return res.redirect('/')
             }
             const isMatch = await bcrypt.compare(password,account.password)
             if(isMatch){
-                const token = jwt.sign({email},'secrethahaha')
-                res.cookie('token',token)
-                return res.redirect('/dashboard')
+                const token = jwt.sign({email,userId:account._id},'secrethahaha')
+                res.cookie('token',token,{
+                    httpOnly:true,
+                    sameSite:'strict'
+                })
+                return res.redirect('/profile')
             }else{
                 return res.send('wrong credentials')
             }
@@ -92,6 +115,26 @@ app
         }catch(err){
             console.error(err.message)
             res.status(500).send('Login Error')
+        }
+
+    })
+
+    .post('/post', isLoggedin ,async (req, res)=>{
+
+        try{
+            const data = await user.findOne({_id:req.user.userId})
+            let content = await post.create({
+                content:req.body.content,
+                user:data._id
+            })
+            data.post.push(content._id)
+            await data.save()
+            res.redirect('/profile')
+            
+
+        }catch(err){
+            console.error(err.message)
+            res.status(500).send('Error occured while creating post')
         }
 
     })
@@ -108,5 +151,7 @@ app
         }
 
     })
+
+    
 
 app.listen(3000)
