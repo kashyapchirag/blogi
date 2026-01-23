@@ -19,15 +19,22 @@
 
         <div class="posts mt-[3rem] w-[100%]">
             <div class="heading text-[1.3rem] mb-[0.6rem]">Your posts</div>
-            <div class="postcontainer flex gap-[2rem] flex-wrap">
+            <div class="postcontainer flex gap-[2rem] justify-center flex-wrap">
 
                 <% posts.forEach(element => {%>
-                    <div class="post bg-zinc-700 min-w-[38%] max-w-[38%] p-3 border-2 border-zinc-600 rounded-[0.7rem]">
+                    <div class="post bg-zinc-700 min-w-[31%] max-w-[31%] p-3 border-2 border-zinc-600 rounded-[0.7rem] relative">
     
                         <div class="username text-blue-500">@<%= username %></div>
                         <div class="content text-[0.8rem] mb-[0.5rem]"><%= element.content %></div>
-                        <a href="" class="text-blue-400 text-[0.8rem] mr-[0.2rem]">Like</a>
-                        <a href="" class="text-zinc-400 text-[0.8rem]">Edit</a>
+
+                        <form action="/like/<%= element._id%>" class="inline" method="post">
+                            <button class="cursor-pointer text-blue-400 text-[0.8rem] mr-[0.2rem]">Like</button>
+                        </form>
+
+                        <a href="/edit/<%= element._id %>" class="text-zinc-400 text-[0.8rem] mr-[0.2rem]">Edit</a>
+                        <form action="/delete/<%= element._id %>" method="post">
+                            <button type="submit" class="flex justify-end absolute right-4 bottom-3.5 text-red-500 text-[0.8rem] cursor-pointer">Delete</button>
+                        </form>
                     </div>
                     
                 <%}); %>

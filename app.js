@@ -47,7 +47,6 @@ try {
 }
 
 
-
 app
     .get('/', (req, res) => {
         res.render('index')
@@ -58,11 +57,20 @@ app
     })
 
     .get('/profile', isLoggedin, async(req, res)=>{
-        let data = await user.findOne({_id:req.user.userId})
-        const posts = await post.find({user:data._id})
+        let data = await user.findOne({_id:req.user.userId}).populate("post")
         // console.log(posts[0].content);
         
-        res.render('profile',{name:data.name,username:data.username ,posts})
+        res.render('profile',{
+            name:data.name,
+            username:data.username,
+            posts:data.post.reverse(), //reverse because we want our latest posts to come up at first
+    
+        })
+    })
+
+    .get('/edit/:id', isLoggedin, async(req, res)=>{
+        let postd = await post.findOne({_id:req.params.id}).populate('user')
+        res.render('edit',{content:postd.content, name:postd.user.name, id:req.params.id})
     })
 
     .post('/register' ,async (req, res)=>{
@@ -135,6 +143,47 @@ app
         }catch(err){
             console.error(err.message)
             res.status(500).send('Error occured while creating post')
+        }
+    })
+
+    .post('/edit/:id', isLoggedin ,async (req, res)=>{
+
+        try{
+            const postd = await post.findOne({_id:req.params.id})
+            postd.content=req.body.content
+            await postd.save()
+            res.redirect('/profile')
+
+        }catch(err){
+            console.error(err.message)
+            res.status(500).send('Error occured while editing the post')
+        }
+    })
+
+    .post('/like/:id', isLoggedin, async(req, res)=>{
+        const postd = await post.findOne({_id:req.params.id})
+        if(!postd.likes.includes(req.user.userId)){
+            postd.likes.push(req.user.userId)
+            await postd.save()
+        }
+            
+        res.redirect('/profile')
+
+    })
+    
+    .post('/delete/:id', isLoggedin ,async (req, res)=>{
+
+        try{
+            const postd = await post.findOne({_id:req.params.id})
+            const userd = await user.findOne({_id:postd.user})
+            userd.post.pull(req.params.id)
+            await userd.save()
+            await post.deleteOne({_id:req.params.id})
+            res.redirect('/profile')
+
+        }catch(err){
+            console.error(err.message)
+            res.status(500).send('Error occured while deleting the post')
         }
 
     })
