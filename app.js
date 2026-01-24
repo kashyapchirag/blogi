@@ -6,8 +6,6 @@ import cookieParser from 'cookie-parser';
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 
-
-
 import { user } from './models/userSchema.js';
 import { post } from './models/postSchema.js';
 
