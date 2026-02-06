@@ -44,7 +44,7 @@ const Register = () => {
                         <label htmlFor="username">Username</label>
                         <input onChange={(e)=>{
                             setUsername(e.target.value)
-                        }} value={username} className='border-2  px-2 border-zinc-300 rounded-md h-10' required type="text" id='username' />
+                        }}minLength={5}  value={username} className='border-2  px-2 border-zinc-300 rounded-md h-10' required type="text" id='username' />
                     </div>
 
                     <div className="c flex flex-col gap-1">
@@ -58,7 +58,7 @@ const Register = () => {
                         <label htmlFor="password">Password</label>
                         <input onChange={(e)=>{
                             setPassword(e.target.value)
-                        }} value={password} className='border-2  px-2 border-zinc-300 rounded-md h-10' required type="password" id='password' />
+                        }} minLength={5} value={password} className='border-2  px-2 border-zinc-300 rounded-md h-10' required type="password" id='password' />
                     </div>
 
                     <div className="button flex flex-col gap-2">

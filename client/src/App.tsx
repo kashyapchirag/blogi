@@ -3,6 +3,7 @@ import AppLayout from './layouts/AppLayout'
 import Register from './pages/Register'
 import Login from './pages/Login'
 import Profile from './pages/Profile'
+import Edit from './pages/Edit'
 
 function App() {
   const router = createBrowserRouter([
@@ -21,6 +22,10 @@ function App() {
         {
           path:'/profile/:username',
           element:<Profile/>
+        },
+        {
+          path:'/profile/edit/:id',
+          element:<Edit/>
         }
       ]
     }

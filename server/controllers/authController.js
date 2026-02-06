@@ -34,10 +34,10 @@ export const login = async(req,res)=>{
         const isMatch = await bcrypt.compare(password,data.password)
         if(isMatch){
             //create token using jwt
-            const token =  jwt.sign({email,username:data.username},process.env.JWT_SECRET,{expiresIn:"1h"})
+            const token =  jwt.sign({_id:data._id,email,username:data.username},process.env.JWT_SECRET,{expiresIn:"1h"})
             //send cookie to browser
             res.cookie("token",token,{httpOnly:true,sameSite:"Strict"})
-            res.status(200).json({message:"login success"})
+            res.status(200).json({message:"login success",username:data.username})
         }else{
             return res.status(401).json({message:"wrong email or password"})
         }
@@ -47,3 +47,10 @@ export const login = async(req,res)=>{
     }
 }
 
+export const logout = async (req,res)=>{
+    res.clearCookie("token",{
+        httpOnly:true,
+        sameSite:"Strict"
+    })
+    res.status(200).json({message:"Logged Out"})
+}

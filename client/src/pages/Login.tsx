@@ -18,6 +18,7 @@ const Login = () => {
                 {withCredentials:true}
             )
             toast.success(res.data.message)
+            navigate(`/profile/${res.data.username}`)
         }catch(err :any){
             toast.error(err.response?.data?.message || "Server crash") 
         }

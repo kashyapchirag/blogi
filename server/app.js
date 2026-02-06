@@ -3,6 +3,9 @@ import dotenv from 'dotenv'
 import { DBconnection } from './config/db.js';
 import cors from 'cors'
 import authRoutes from './routes/authRoutes.js'
+import profileRoutes from './routes/profileRoutes.js'
+import postRoutes from './routes/postRoutes.js'
+import cookieParser from 'cookie-parser';
 
 dotenv.config();
 const app = express();
@@ -14,7 +17,10 @@ app.use(cors({
     credentials:true
 }));
 app.use(express.json());
+app.use(cookieParser())
 
 app.use('/api',authRoutes)
+app.use('/api',profileRoutes)
+app.use('/api',postRoutes)
 
 export default app;
