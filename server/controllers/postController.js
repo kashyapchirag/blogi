@@ -66,7 +66,6 @@ export const deletePost = async (req,res)=>{
         if(!post){
             return res.status(404).json({message:"Post not found"})
         }
-
         await Post.deleteOne({_id:id})
         const user = await User.findById(req.user._id)
         user.posts.pull(id)
